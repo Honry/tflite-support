@@ -72,10 +72,22 @@ async function start() {
   //////////////////////////////////////////////////////////////////////////////
   // Infer, get output tensor, and sort by logit values in reverse.
 
-  const inferStart = Date.now();
-  const success = modelRunner.Infer();
-  const inferLatency = Date.now() - inferStart;
-  if (!success) return;
+  // Set 'numRuns' param to run inference multiple times
+  // numRuns includes the first run of inference
+  const params = new URLSearchParams(location.search);
+  let numRuns = params.get('numRuns');
+  numRuns = numRuns === null ? 1 : parseInt(numRuns);
+
+  const inferTimes = [];
+  for (let i = 0; i < numRuns; i++) {
+    const start = performance.now();
+    const success = modelRunner.Infer();
+    const inferTime = (performance.now() - start).toFixed(2);
+    if (!success) return;
+    console.log(`Infer time ${i+1}: ${inferTime} ms`);
+    inferTimes.push(Number(inferTime));
+  }
+
   const result = Array.from(output.data());
   result.shift();  // Remove the first logit which is the background noise.
   const sortedResult = result
@@ -89,9 +101,28 @@ async function start() {
 
   const classIndex = sortedResult[0].i;
   const score = sortedResult[0].logit;
-  document.querySelector('.result').textContent =
-      `${IMAGENET_CLASSES[classIndex]} (score: ${score.toFixed(3)}, latency: ${
-          inferLatency}ms)`;
+  if (inferTimes.length > 1) {
+    const averageTime = (inferTimes.reduce((acc, curr) => acc + curr, 0) / inferTimes.length).toFixed(2);
+    const minTime = Math.min(...inferTimes);
+    const maxTime = Math.max(...inferTimes);
+    const medianTime = getMedianValue(inferTimes);
+    document.querySelector('.result').innerHTML =
+    `${IMAGENET_CLASSES[classIndex]} (score: ${score.toFixed(3)}) <br>
+      numRuns: ${numRuns} <br> average time: ${averageTime} ms <br>
+      median time: ${medianTime} ms <br> max Time: ${maxTime} ms <br>
+      min Time: ${minTime} ms`;
+  } else {
+    document.querySelector('.result').textContent =
+    `${IMAGENET_CLASSES[classIndex]} (score: ${score.toFixed(3)}, latency: ${
+      inferTimes[0]}ms)`;
+  }
+}
+
+function getMedianValue(array) {
+  array = array.sort((a, b) => a - b);
+  const medianValue = array.length % 2 !== 0 ? array[Math.floor(array.length / 2)] :
+      (array[array.length / 2 - 1] + array[array.length / 2]) / 2;
+  return medianValue.toFixed(2);
 }
 
 start();
