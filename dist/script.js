@@ -1,6 +1,6 @@
 MODEL_PATH = 'mobilenetv2.tflite';
 
-async function start() {
+async function load() {
   //////////////////////////////////////////////////////////////////////////////
   // Create the model runner with the model.
 
@@ -31,9 +31,17 @@ async function start() {
   document.querySelector('.loading-stats').textContent =
       `Loaded WASM module and TFLite model ${MODEL_PATH} in ${
           loadFinishedMs}ms`;
-  document.querySelector('.content').classList.remove('hide');
+  document.querySelector('.hide').classList.remove('hide');
+  return modelRunner;
 
+}
 
+let modelRunner;
+window.onload = async function () {
+  modelRunner = await load();
+}
+
+function start() {
 
   //////////////////////////////////////////////////////////////////////////////
   // Get input and output info.
@@ -44,8 +52,6 @@ async function start() {
   const outputs = callAndDelete(
       modelRunner.GetOutputs(), results => convertCppVectorToArray(results));
   const output = outputs[0];
-
-
 
   //////////////////////////////////////////////////////////////////////////////
   // Set input tensor data from the image (224 x 224 x 3).
@@ -74,8 +80,14 @@ async function start() {
 
   // Set 'numRuns' param to run inference multiple times
   // numRuns includes the first run of inference
-  const params = new URLSearchParams(location.search);
-  let numRuns = params.get('numRuns');
+  
+  let numRuns = document.getElementById('numRuns').value;
+  console.log('numRuns: ', numRuns);
+
+  if (numRuns < 1) {
+    alert('Run Number should be greater than 0!');
+    return;
+  }
   numRuns = numRuns === null ? 1 : parseInt(numRuns);
 
   const inferTimes = [];
@@ -124,8 +136,6 @@ function getMedianValue(array) {
       (array[array.length / 2 - 1] + array[array.length / 2]) / 2;
   return medianValue.toFixed(2);
 }
-
-start();
 
 
 ////////////////////////////////////////////////////////////////////////////////
