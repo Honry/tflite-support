@@ -24,6 +24,7 @@ limitations under the License.
 #include "tensorflow/lite/kernels/internal/tensor_ctypes.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 #include "tensorflow_lite_support/cc/port/statusor.h"
+#include "mediapipe/util/tflite/operations/transpose_conv_bias.h"
 
 using tflite::support::StatusOr;
 
@@ -74,7 +75,10 @@ std::vector<TFLiteWebModelRunnerTensorInfo> TFLiteWebModelRunner::GetOutputs() {
 
 TfLiteStatus TFLiteWebModelRunner::InitFromBuffer(
     const char* model_buffer_data, size_t model_buffer_size,
-    std::unique_ptr<tflite::OpResolver> resolver) {
+    std::unique_ptr<tflite::ops::builtin::BuiltinOpResolver> resolver) {
+  // tflite::ops::builtin::BuiltinOpResolver resolver;
+  resolver->AddCustom("Convolution2DTransposeBias",
+    mediapipe::tflite_operations::RegisterConvolution2DTransposeBias());
   // Initilaize the model from flatbuffer.
   const char* model_buffer = reinterpret_cast<const char*>(model_buffer_data);
   flatbuffers::Verifier verifier(reinterpret_cast<const uint8_t*>(model_buffer),

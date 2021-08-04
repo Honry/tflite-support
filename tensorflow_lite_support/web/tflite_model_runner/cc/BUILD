@@ -17,6 +17,7 @@ cc_library(
         "@org_tensorflow//tensorflow/lite/kernels:kernel_util",
         "@org_tensorflow//tensorflow/lite/kernels/internal:tensor",
         "@org_tensorflow//tensorflow/lite/schema:schema_fbs",
+        "@org_mediapipe//mediapipe/util/tflite/operations:transpose_conv_bias",
     ],
 )
 
@@ -56,6 +57,7 @@ cc_binary(
         "@org_tensorflow//tensorflow/lite:op_resolver",
         "@org_tensorflow//tensorflow/lite:tflite_with_xnnpack",  # link xnnpack
         "@org_tensorflow//tensorflow/lite/kernels:builtin_ops",
+        "@org_mediapipe//mediapipe/util/tflite/operations:transpose_conv_bias",
     ],
 )
 

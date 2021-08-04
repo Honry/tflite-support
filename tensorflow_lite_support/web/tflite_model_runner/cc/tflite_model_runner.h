@@ -92,7 +92,7 @@ class TFLiteWebModelRunner {
  private:
   TfLiteStatus InitFromBuffer(const char* model_buffer_data,
                               size_t model_buffer_size,
-                              std::unique_ptr<tflite::OpResolver> resolver);
+                              std::unique_ptr<tflite::ops::builtin::BuiltinOpResolver> resolver);
   TFLiteWebModelRunnerTensorInfo CreateTensorInfo(TfLiteTensor* tensor, int id);
 
   const TFLiteWebModelRunnerOptions& options_;

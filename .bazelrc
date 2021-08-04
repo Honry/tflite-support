@@ -1,6 +1,9 @@
 # This file is based on tensorflow's (v2.2.0) .bazelrc found here:
 # https://github.com/tensorflow/tensorflow/blob/v2.2.0/.bazelrc
 
+# Mediapipe custom operators are not public
+common --check_visibility=false
+
 # Sets the default Apple platform to macOS.
 build:macos --apple_platform_type=macos
 

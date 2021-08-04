@@ -368,6 +368,12 @@ http_archive(
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
+# MediaPipe
+local_repository(
+  name="org_mediapipe",
+  path = "/home/wm/work/webml/tflite-support-upstream/mediapipe_src",
+)
+
 # Set up TF.
 load("@org_tensorflow//tensorflow:workspace3.bzl", "workspace")
 workspace()
