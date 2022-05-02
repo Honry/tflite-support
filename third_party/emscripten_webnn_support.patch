@@ -1426,10 +1426,10 @@ index 000000000..bdef1df3d
 +#endif  // WEBNN_ENUM_CLASS_BITMASKS_H_
 diff --git a/system/include/webnn/webnn.h b/system/include/webnn/webnn.h
 new file mode 100644
-index 000000000..bf0841cac
+index 000000000..1db1d432e
 --- /dev/null
 +++ b/system/include/webnn/webnn.h
-@@ -0,0 +1,627 @@
+@@ -0,0 +1,628 @@
 +// Licensed under the Apache License, Version 2.0 (the "License");
 +// you may not use this file except in compliance with the License.
 +// You may obtain a copy of the License at
@@ -1494,6 +1494,7 @@ index 000000000..bf0841cac
 +    WNNBackendType_OpenVINO = 0x00000002,
 +    WNNBackendType_OneDNN = 0x00000003,
 +    WNNBackendType_MLAS = 0x00000004,
++    WNNBackendType_XNNPACK = 0x00000005,
 +    WNNBackendType_Force32 = 0x7FFFFFFF
 +} WNNBackendType;
 +
@@ -2059,10 +2060,10 @@ index 000000000..bf0841cac
 +#endif // WEBNN_H_
 diff --git a/system/include/webnn/webnn_cpp.h b/system/include/webnn/webnn_cpp.h
 new file mode 100644
-index 000000000..5d80812d9
+index 000000000..ee822ab80
 --- /dev/null
 +++ b/system/include/webnn/webnn_cpp.h
-@@ -0,0 +1,634 @@
+@@ -0,0 +1,635 @@
 +#ifndef WEBNN_CPP_H_
 +#define WEBNN_CPP_H_
 +
@@ -2085,6 +2086,7 @@ index 000000000..5d80812d9
 +        OpenVINO = 0x00000002,
 +        OneDNN = 0x00000003,
 +        MLAS = 0x00000004,
++        XNNPACK = 0x00000005,
 +    };
 +
 +    enum class ConvTranspose2dFilterOperandLayout : uint32_t {
@@ -2699,10 +2701,10 @@ index 000000000..5d80812d9
 +#endif // WEBNN_CPP_H_
 diff --git a/system/lib/webnn/webnn_cpp.cpp b/system/lib/webnn/webnn_cpp.cpp
 new file mode 100644
-index 000000000..d1e3fd5be
+index 000000000..b5826d7a8
 --- /dev/null
 +++ b/system/lib/webnn/webnn_cpp.cpp
-@@ -0,0 +1,1018 @@
+@@ -0,0 +1,1019 @@
 +#include "webnn/webnn_cpp.h"
 +
 +namespace wnn {
@@ -2726,6 +2728,7 @@ index 000000000..d1e3fd5be
 +    static_assert(static_cast<uint32_t>(BackendType::OpenVINO) == WNNBackendType_OpenVINO, "value mismatch for BackendType::OpenVINO");
 +    static_assert(static_cast<uint32_t>(BackendType::OneDNN) == WNNBackendType_OneDNN, "value mismatch for BackendType::OneDNN");
 +    static_assert(static_cast<uint32_t>(BackendType::MLAS) == WNNBackendType_MLAS, "value mismatch for BackendType::MLAS");
++    static_assert(static_cast<uint32_t>(BackendType::XNNPACK) == WNNBackendType_XNNPACK, "value mismatch for BackendType::XNNPACK");
 +
 +    // ConvTranspose2dFilterOperandLayout
 +
